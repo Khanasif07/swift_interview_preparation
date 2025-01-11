@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playground version='6.0' target-platform='ios' buildActiveScheme='true' importAppTypes='true'>
+    <pages>
+        <page name='Array'/>
+        <page name='String'/>
+        <page name='LinkedList'/>
+        <page name='Model'/>
+        <page name='Networking'/>
+        <page name='Concurrency'/>
+        <page name='DesignPattern'/>
+        <page name='InterviewQuestions'/>
+        <page name='BinaryTree'/>
+        <page name='Combine'/>
+    </pages>
+</playground>
