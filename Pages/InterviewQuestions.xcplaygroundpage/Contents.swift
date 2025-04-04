@@ -53,7 +53,7 @@ struct CapsLock {
 
 struct UserName{
     @CapsLock var name: String
-    var fullName: String = ""{
+    var fullName: String{
         return name + "khan"
     }
     //Observe changes in order to uodate UI..
@@ -83,8 +83,8 @@ struct UserName{
         return "Loaded Data"
     }()
 }
-var user = User(username: "johnDoe")
-print(user.username)  // Output: "JOHNDOE"
+//var user = User(username: "johnDoe")
+//print(user.username)  // Output: "JOHNDOE"
 
 func deferStatement(){
     print("task1")
@@ -96,30 +96,6 @@ func deferStatement(){
     }
     print("task4")
 }
-
-//func thirdLargestInArray(_ nums: [Int]) -> (Int,Int,Int){
-//    var first = 0
-//    var second = 0
-//    var third = 0
-//    for i in 0...nums.count-1{
-//        if (nums[i] > first){
-//                        third  = second
-//                        second = first
-//                        first  = nums[i]
-//                    }
-//                else if (nums[i] > second){
-//                        third = second
-//                        second = nums[i]
-//                    }
-//                else if (nums[i] > third){
-//                        third = nums[i]
-//                }
-//    }
-//    return (first,second,third)
-//}
-
-//print("Third Largest element in given array would be \(thirdLargestInArray([1,3,5,7,9,2,4,6,8,10]))")
-//print(mergeTwoSortedArray(arr1: [1,3,5,7,9], arr2: [2,4,6,8,10]))
 
 func removeDuplicates(_ num:  [Int]) -> Int {
     var slow = 0
@@ -610,3 +586,95 @@ func getUSAddress(_ countryCode: String) -> some Address {
 }
 
 getUSAddress("+971")
+
+//MARK: - Actors
+
+struct Message: Sendable {
+    let sender: String
+    let content: String
+}
+
+// Actor 1 - Responsible for sending a message
+actor SenderActor {
+    func sendMessage(to receiver: ReceiverActor, message: Message) {
+        print("Sending message to receiver: \(message.content)")
+        Task {
+            await receiver.receiveMessage(message)
+        }
+    }
+}
+
+// Actor 2 - Responsible for receiving a message
+actor ReceiverActor {
+    func receiveMessage(_ message: Message) {
+        print("Received message from \(message.sender): \(message.content)")
+    }
+}
+
+// Example usage:
+func sendMessageExample() async {
+    let sender = SenderActor()
+    let receiver = ReceiverActor()
+
+    let message = Message(sender: "Alice", content: "Hello, how are you?")
+    
+    // Send message to receiver safely
+    await sender.sendMessage(to: receiver, message: message)
+}
+
+
+//
+
+
+// A struct that is not Sendable
+struct SharedData {
+    var value: Int
+}
+
+actor ActorOne {
+    var sharedData = SharedData(value: 0)
+
+    func modifyData() {
+        sharedData.value += 1
+    }
+}
+
+actor ActorTwo {
+    var sharedData = SharedData(value: 0)
+
+    func modifyData() {
+        sharedData.value += 1
+    }
+}
+
+// This code would cause a race condition if the sharedData isn't Sendable and properly protected
+func runActorsConcurrently() async {
+    let actor1 = ActorOne()
+    let actor2 = ActorTwo()
+    
+//    Task {
+//        await actor1.modifyData()
+//    }
+//
+//    Task {
+//        await actor2.modifyData()
+//    }
+    // Create two concurrent tasks
+        async let task1 = actor1.modifyData()
+        async let task2 = actor2.modifyData()
+    // Await both tasks to ensure they complete
+        await task1
+        await task2
+}
+
+//Task {
+//    await runActorsConcurrently()
+//}
+
+func performAsyncFunction() async {
+    await runActorsConcurrently()
+}
+
+Task{
+    await performAsyncFunction()
+}

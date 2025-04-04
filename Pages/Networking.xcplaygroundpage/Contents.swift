@@ -114,14 +114,14 @@ func createUser() async {
 //    }
 //}
 
-//Task {
-//    do {
-//        let result:[User] = try await NetworkManager.shared.get(urlString: usersUrl)
-//        print(result)
-//    } catch {
-//        print(error.localizedDescription)
-//    }
-//}
+Task {
+    do {
+        let result:[User] = try await NetworkManager.shared.get(urlString: usersUrl)
+        print(result)
+    } catch {
+        print(error.localizedDescription)
+    }
+}
 
 //View Model..
 class UserViewModel: ObservableObject {

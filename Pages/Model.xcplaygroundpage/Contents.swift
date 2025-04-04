@@ -141,6 +141,9 @@ enum Optional<T> {
     case none  // Represents nil
     case some(T)  // Represents a value of the wrapped type
 }
+var number: Int? = 10
+var number: Optional<Int>  = .some(10)
+var NoNumber: Optional<Int>  = .none
 
 //delegate
 protocol SendDataDelegate: NSObject{

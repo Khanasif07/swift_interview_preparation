@@ -40,15 +40,17 @@ func dispatchQueueGlobal(){
 func dispatchQueueSerialSync(){
     //InitiallyActive
     let serialQueue = DispatchQueue(label: "serial queue",attributes: .concurrent)
-    serialQueue.activate()
+//    serialQueue.activate()
     print("Start")
-    serialQueue.async {
+    
+    serialQueue.sync {
         print ("Task-1 started")
         for i in 0...5 {
             print("Task-1 🇮🇳 \(i)")
         }
         print ("Task-1 completed")
     }
+    
     serialQueue.async {
         print ("Task-2 started")
         for i in 0...5 {
@@ -56,6 +58,7 @@ func dispatchQueueSerialSync(){
         }
         print ("Task-2 completed")
     }
+    
     print("End")
 }
 
@@ -98,7 +101,9 @@ func dispatchWorkItem(){
     DispatchQueue.global().async {
         workItem.perform()
     }
-    workItem.cancel()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+        workItem.cancel()
+    })
 }
 
 
@@ -209,11 +214,12 @@ func doLongSyncTaskInConcurrentQueue() {
 //
 let semaphore = DispatchSemaphore(value: 1)
 for i in 1...6 {
+    print("wait enter \(i)")
     semaphore.wait()  // semaphore -= 1
     print("wait enter")
     DispatchQueue.global().async() {
         print("Start access to the shared resource: \(i)")
-        sleep(2)
+        //sleep(1)
         semaphore.signal()  // semaphore += 1
         print("signal enter")
     }
@@ -248,7 +254,7 @@ print(operationQueue.progress.isPaused)
  //
 
 //GCD============
-/*
+//
 DispatchQueue.global(qos: .background).async {
     // Background task
     print("background---")
@@ -257,7 +263,7 @@ DispatchQueue.global(qos: .background).async {
         print("main---")
     }
 }
-*/
+//
 //==============
 let concurrentQueue = DispatchQueue(label: "com.example.concurrentQueue")
 concurrentQueue.async {
@@ -271,3 +277,20 @@ concurrentQueue.async {
     sleep(2)
     print("Task 2 finished")
 }
+
+//===
+let serialQueue = DispatchQueue(label: "com.example.serialQueue")
+
+print("Task 11")
+
+serialQueue.sync {
+    print("Task 22")
+    
+    serialQueue.sync {
+        print("Task 33")
+    }
+    print("Task 44")
+}
+
+print("Task 55")
+
